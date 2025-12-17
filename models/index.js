@@ -17,7 +17,7 @@ db.User = require('./user')(sequelize, Sequelize);
 db.Message = require('./message')(sequelize, Sequelize);
 
 // Relacionamentos
-db.User.hasMany(db.Message);
+db.User.hasMany(db.Message, { onDelete: 'CASCADE' });
 db.Message.belongsTo(db.User);
 
 module.exports = db;
