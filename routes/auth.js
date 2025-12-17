@@ -6,6 +6,13 @@ const db = require('../models');
 
 const router = express.Router();
 
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect('/login');
+}
+
 // HOME
 router.get('/', (req, res) => {
   res.render('index');
@@ -19,6 +26,11 @@ router.get('/signup', (req, res) => {
 // GET login
 router.get('/login', (req, res) => {
   res.render('login');
+});
+
+// GET join club
+router.get('/join', ensureAuthenticated, (req, res) => {
+  res.render('join');
 });
 
 // POST signup
@@ -67,5 +79,27 @@ router.post(
     failureRedirect: '/login',
   })
 );
+
+// POST join club
+router.post('/join', ensureAuthenticated, async (req, res) => {
+  const SECRET_PASSCODE = 'club123'; // depois colocamos no .env
+
+  if (req.body.passcode !== SECRET_PASSCODE) {
+    return res.render('join', {
+      error: 'Passcode incorreto',
+    });
+  }
+
+  try {
+    await db.User.update(
+      { membershipStatus: true },
+      { where: { id: req.user.id } }
+    );
+
+    res.redirect('/');
+  } catch (err) {
+    res.redirect('/join');
+  }
+});
 
 module.exports = router;

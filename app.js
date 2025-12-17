@@ -34,6 +34,11 @@ require('./config/passport')(passport);
 // Database
 db.sequelize.sync();
 
+app.use((req, res, next) => {
+  res.locals.user = req.user;
+  next();
+});
+
 // Rotas
 const authRouter = require('./routes/auth');
 app.use('/', authRouter);
