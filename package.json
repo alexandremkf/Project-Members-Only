@@ -16,5 +16,21 @@
     "url": "https://github.com/alexandremkf/Project-Members-Only/issues"
   },
   "homepage": "https://github.com/alexandremkf/Project-Members-Only#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.3",
+    "ejs": "^3.1.10",
+    "express": "^5.2.1",
+    "express-session": "^1.18.2",
+    "express-validator": "^7.3.1",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
+    "pg": "^8.16.3",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
 }
