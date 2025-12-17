@@ -1,13 +1,24 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const { body, validationResult } = require('express-validator');
+const passport = require('passport');
 const db = require('../models');
 
 const router = express.Router();
 
+// HOME
+router.get('/', (req, res) => {
+  res.render('index');
+});
+
 // GET signup
 router.get('/signup', (req, res) => {
   res.render('signup');
+});
+
+// GET login
+router.get('/login', (req, res) => {
+  res.render('login');
 });
 
 // POST signup
@@ -46,6 +57,15 @@ router.post(
       });
     }
   }
+);
+
+// POST login
+router.post(
+  '/login',
+  passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/login',
+  })
 );
 
 module.exports = router;

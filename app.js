@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const session = require('express-session');
+const passport = require('passport');
 const db = require('./models');
 
 const app = express();
@@ -14,21 +15,28 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-}));
+// 🔧 Session
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
-// Routes
-const indexRouter = require('./routes/index');
-const authRouter = require('./routes/auth');
+// 🔧 Inicializa o Passport
+app.use(passport.initialize());
+app.use(passport.session());
 
-app.use('/', indexRouter);
-app.use('/', authRouter);
+// 🔧 Configura estratégias do Passport
+require('./config/passport')(passport);
 
 // Database
 db.sequelize.sync();
+
+// Rotas
+const authRouter = require('./routes/auth');
+app.use('/', authRouter);
 
 // Server
 app.listen(3000, () => {
