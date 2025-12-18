@@ -32,7 +32,9 @@ app.use(passport.session());
 require('./config/passport')(passport);
 
 // Database
-db.sequelize.sync();
+db.sequelize.sync({
+  alter: process.env.NODE_ENV !== 'production',
+});
 
 app.use((req, res, next) => {
   res.locals.user = req.user;
@@ -44,6 +46,8 @@ const authRouter = require('./routes/auth');
 app.use('/', authRouter);
 
 // Server
-app.listen(3000, () => {
-  console.log('Servidor rodando em http://localhost:3000');
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
