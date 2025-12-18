@@ -1,62 +1,92 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
   <title>Members Only</title>
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <h1>Members Only 🕵️</h1>
-  <p>Welcome to the clubhouse 👀</p>
 
-  <% if (user) { %>
-    <p>Olá, <%= user.firstName %></p>
+  <div class="container">
 
-    <a href="/messages/new">Create message</a>
+    <!-- NAV / HEADER -->
+    <div class="nav">
+      <div>
+        <h1>Members Only 🕵️</h1>
+        <p>Confidential clubhouse</p>
+      </div>
 
-    <% if (!user.membershipStatus) { %>
-      <a href="/join">Join the club</a>
-    <% } else { %>
-      <p>⭐ Você é membro do clube</p>
+      <div>
+        <% if (user) { %>
+          <span style="margin-right: 12px;">
+            Olá, <strong><%= user.firstName %></strong>
+          </span>
+
+          <a href="/messages/new" class="btn">New Message</a>
+
+          <% if (!user.membershipStatus) { %>
+            <a href="/join" class="btn-secondary">Join</a>
+          <% } %>
+
+          <a href="/logout" class="btn-secondary">Logout</a>
+        <% } else { %>
+          <a href="/login" class="btn">Login</a>
+          <a href="/signup" class="btn-secondary">Signup</a>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- STATUS DO USUÁRIO -->
+    <% if (user && user.membershipStatus) { %>
+      <div class="alert alert-success">
+        ⭐ Access level: MEMBER
+      </div>
     <% } %>
 
-    <a href="/logout">Logout</a>
-  <% } else { %>
-    <a href="/login">Login</a>
-    <a href="/signup">Signup</a>
-  <% } %>
+    <!-- MESSAGES -->
+    <% messages.forEach(message => { %>
+      <div class="message-card">
 
-  <hr />
+        <!-- DELETE (ADMIN ONLY) -->
+        <% if (user && user.isAdmin) { %>
+          <form
+            class="delete-form"
+            action="/messages/<%= message.id %>/delete"
+            method="POST"
+          >
+            <button type="submit" class="btn-danger">Delete</button>
+          </form>
+        <% } %>
 
-  <% messages.forEach(message => { %>
-    <div style="border:1px solid #ccc; margin-bottom:10px; padding:10px;">
         <h3><%= message.title %></h3>
         <p><%= message.text %></p>
 
-        <!-- MEMBRO -->
+        <!-- MEMBER VIEW -->
         <% if (user && user.membershipStatus) { %>
-        <small>
-            By <%= message.User.firstName %>
-            on <%= message.createdAt.toDateString() %>
-        </small>
+          <div class="message-meta">
+            By <%= message.User.firstName %> •
+            <%= message.createdAt.toDateString() %>
+          </div>
         <% } %>
 
-        <!-- ADMIN -->
+        <!-- ADMIN VIEW -->
         <% if (user && user.isAdmin) { %>
-        <br />
-        <small>
-            👑 Admin view:
+          <div class="message-meta admin-badge">
+            👑 ADMIN VIEW —
             <%= message.User.firstName %> |
             <%= message.User.username %>
-        </small>
-
-        <form
-            action="/messages/<%= message.id %>/delete"
-            method="POST"
-            style="margin-top: 5px;"
-        >
-            <button type="submit">🗑️ Delete</button>
-        </form>
+          </div>
         <% } %>
+
+      </div>
+    <% }) %>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      Internal system • Members Only
     </div>
-  <% }) %>
+
+  </div>
+
 </body>
 </html>
