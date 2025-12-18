@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const { body, validationResult } = require('express-validator');
 const passport = require('passport');
 const db = require('../models');
+const isAdmin = require('../middleware/isAdmin');
 
 const router = express.Router();
 
@@ -136,5 +137,24 @@ router.post('/messages/new', ensureAuthenticated, async (req, res) => {
     res.redirect('/messages/new');
   }
 });
+
+// POST delete message (ADMIN ONLY)
+router.post(
+  '/messages/:id/delete',
+  ensureAuthenticated,
+  isAdmin,
+  async (req, res) => {
+    try {
+      await db.Message.destroy({
+        where: { id: req.params.id },
+      });
+
+      res.redirect('/');
+    } catch (err) {
+      console.error(err);
+      res.redirect('/');
+    }
+  }
+);
 
 module.exports = router;

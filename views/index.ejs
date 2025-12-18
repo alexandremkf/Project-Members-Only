@@ -28,26 +28,34 @@
 
   <% messages.forEach(message => { %>
     <div style="border:1px solid #ccc; margin-bottom:10px; padding:10px;">
-      <h3><%= message.title %></h3>
-      <p><%= message.text %></p>
+        <h3><%= message.title %></h3>
+        <p><%= message.text %></p>
 
-      <!-- MEMBRO -->
-      <% if (user && user.membershipStatus) { %>
+        <!-- MEMBRO -->
+        <% if (user && user.membershipStatus) { %>
         <small>
-          By <%= message.User.firstName %>
-          on <%= message.createdAt.toDateString() %>
+            By <%= message.User.firstName %>
+            on <%= message.createdAt.toDateString() %>
         </small>
-      <% } %>
+        <% } %>
 
-      <!-- ADMIN -->
-      <% if (user && user.isAdmin) { %>
+        <!-- ADMIN -->
+        <% if (user && user.isAdmin) { %>
         <br />
         <small>
-          👑 Admin view:
-          <%= message.User.firstName %> |
-          <%= message.User.username %>
+            👑 Admin view:
+            <%= message.User.firstName %> |
+            <%= message.User.username %>
         </small>
-      <% } %>
+
+        <form
+            action="/messages/<%= message.id %>/delete"
+            method="POST"
+            style="margin-top: 5px;"
+        >
+            <button type="submit">🗑️ Delete</button>
+        </form>
+        <% } %>
     </div>
   <% }) %>
 </body>
