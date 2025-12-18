@@ -4,39 +4,51 @@
   <title>Members Only</title>
 </head>
 <body>
-    <h1>Members Only 🕵️</h1>
-    <p>Welcome to the clubhouse 👀</p>
+  <h1>Members Only 🕵️</h1>
+  <p>Welcome to the clubhouse 👀</p>
 
-    <% if (user) { %>
+  <% if (user) { %>
     <p>Olá, <%= user.firstName %></p>
+
     <a href="/messages/new">Create message</a>
 
     <% if (!user.membershipStatus) { %>
-        <a href="/join">Join the club</a>
+      <a href="/join">Join the club</a>
     <% } else { %>
-        <p>⭐ Você é membro do clube</p>
+      <p>⭐ Você é membro do clube</p>
     <% } %>
 
     <a href="/logout">Logout</a>
-    <% } else { %>
+  <% } else { %>
     <a href="/login">Login</a>
     <a href="/signup">Signup</a>
-    <% } %>
+  <% } %>
 
-    <hr />
+  <hr />
 
-    <% messages.forEach(message => { %>
-        <div style="border:1px solid #ccc; margin-bottom:10px; padding:10px;">
-            <h3><%= message.title %></h3>
-            <p><%= message.text %></p>
+  <% messages.forEach(message => { %>
+    <div style="border:1px solid #ccc; margin-bottom:10px; padding:10px;">
+      <h3><%= message.title %></h3>
+      <p><%= message.text %></p>
 
-            <% if (user && user.membershipStatus) { %>
-            <small>
-                By <%= message.User.firstName %>
-                on <%= message.createdAt.toDateString() %>
-            </small>
-            <% } %>
-        </div>
-    <% }) %>
+      <!-- MEMBRO -->
+      <% if (user && user.membershipStatus) { %>
+        <small>
+          By <%= message.User.firstName %>
+          on <%= message.createdAt.toDateString() %>
+        </small>
+      <% } %>
+
+      <!-- ADMIN -->
+      <% if (user && user.isAdmin) { %>
+        <br />
+        <small>
+          👑 Admin view:
+          <%= message.User.firstName %> |
+          <%= message.User.username %>
+        </small>
+      <% } %>
+    </div>
+  <% }) %>
 </body>
 </html>
