@@ -4,11 +4,12 @@
   <title>Members Only</title>
 </head>
 <body>
-    <h1>Members Only</h1>
+    <h1>Members Only 🕵️</h1>
     <p>Welcome to the clubhouse 👀</p>
 
     <% if (user) { %>
     <p>Olá, <%= user.firstName %></p>
+    <a href="/messages/new">Create message</a>
 
     <% if (!user.membershipStatus) { %>
         <a href="/join">Join the club</a>
@@ -21,5 +22,21 @@
     <a href="/login">Login</a>
     <a href="/signup">Signup</a>
     <% } %>
+
+    <hr />
+
+    <% messages.forEach(message => { %>
+        <div style="border:1px solid #ccc; margin-bottom:10px; padding:10px;">
+            <h3><%= message.title %></h3>
+            <p><%= message.text %></p>
+
+            <% if (user && user.membershipStatus) { %>
+            <small>
+                By <%= message.User.firstName %>
+                on <%= message.createdAt.toDateString() %>
+            </small>
+            <% } %>
+        </div>
+    <% }) %>
 </body>
 </html>

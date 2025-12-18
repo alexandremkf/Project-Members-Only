@@ -14,8 +14,13 @@ function ensureAuthenticated(req, res, next) {
 }
 
 // HOME
-router.get('/', (req, res) => {
-  res.render('index');
+router.get('/', async (req, res) => {
+  const messages = await db.Message.findAll({
+    include: db.User,
+    order: [['createdAt', 'DESC']],
+  });
+
+  res.render('index', { messages });
 });
 
 // GET signup
@@ -28,9 +33,24 @@ router.get('/login', (req, res) => {
   res.render('login');
 });
 
+// GET logout
+router.get('/logout', (req, res, next) => {
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+    res.redirect('/');
+  });
+});
+
 // GET join club
 router.get('/join', ensureAuthenticated, (req, res) => {
   res.render('join');
+});
+
+// GET create message
+router.get('/messages/new', ensureAuthenticated, (req, res) => {
+  res.render('new-message');
 });
 
 // POST signup
@@ -99,6 +119,21 @@ router.post('/join', ensureAuthenticated, async (req, res) => {
     res.redirect('/');
   } catch (err) {
     res.redirect('/join');
+  }
+});
+
+// POST create message
+router.post('/messages/new', ensureAuthenticated, async (req, res) => {
+  try {
+    await db.Message.create({
+      title: req.body.title,
+      text: req.body.text,
+      UserId: req.user.id,
+    });
+
+    res.redirect('/');
+  } catch (err) {
+    res.redirect('/messages/new');
   }
 });
 
